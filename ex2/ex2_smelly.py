@@ -1,13 +1,51 @@
-class Shape:
-    def calculate_area(self, shape_type, **kwargs):
-        if shape_type == 'circle':
-            radius = kwargs.get('radius')
-            return 3.14 * radius * radius
-        elif shape_type == 'rectangle':
-            length = kwargs.get('length')
-            width = kwargs.get('width')
-            return length * width
-        elif shape_type == 'triangle':
-            base = kwargs.get('base')
-            height = kwargs.get('height')
-            return 0.5 * base * height
+from abc import ABC, abstractmethod
+
+
+class Shape(ABC):
+    @abstractmethod
+    def calculate_area(self):
+        pass
+
+
+class Circle(Shape):
+    shape_type = 'circle'
+
+    def __init__(self, **kwargs):
+        self.radius = kwargs.get('radius')
+
+    def calculate_area(self):
+        return 3.14 * self.radius * self.radius
+
+
+class Rectangle(Shape):
+    shape_type = 'rectangle'
+
+    def __init__(self, **kwargs):
+        self.length = kwargs.get('length')
+        self.width = kwargs.get('width')
+
+    def calculate_area(self):
+        return self.length * self.width
+
+
+class Triangle(Shape):
+    shape_type = 'triangle'
+
+    def __init__(self, **kwargs):
+        self.base = kwargs.get('base')
+        self.height = kwargs.get('height')
+
+    def calculate_area(self):
+        return 0.5 * self.base * self.height
+
+
+class NullShape(Shape):
+    def calculate_area(self):
+        return None
+
+
+def create_shape(shape_type, **kwargs):
+    for shape_cls in (Circle, Rectangle, Triangle):
+        if shape_cls.shape_type == shape_type:
+            return shape_cls(**kwargs)
+    return NullShape()
